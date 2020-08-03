@@ -1,0 +1,169 @@
+//  ################################################################################################
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more contributor license 
+//  agreements. See the NOTICE file distributed with this work for additional information
+//  regarding copyright ownership. The ASF licenses this file to you under the Apache License,
+//  Version 2.0 (the"License"); you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//
+//  http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software distributed under the 
+//  License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, 
+//  either express or implied. See the License for the specific language governing permissions and 
+//  limitations under the License.
+//
+//  ################################################################################################
+
+//  Use of Include Guards
+//`ifndef _master_driver_INCLUDED_
+//`define _master_driver_INCLUDED_
+
+//------------------------------------------------------------------------------------------------//
+//  Class: master_driver
+//  A driver is written by extending the uvm_driver.uvm_driver is inherited from uvm_component, 
+//  Methods and TLM port (seq_item_port) are defined for communication between sequencer and driver.
+//  The uvm_driver is a parameterized class and it is parameterized with the type of the request
+//  sequence_item and the type of the response sequence_item. 
+//------------------------------------------------------------------------------------------------//
+class master_driver extends uvm_driver #(master_xtn);
+
+
+//  Factory Method in UVM enables us to register a class, object and variables inside the factory 
+	`uvm_component_utils(master_driver)
+
+//  Virtual interface holds the pointer to the Interface.    
+    // TODO: Get the interface via modport
+	virtual uart_if vif;
+	master_agent_config w_cfg;
+        env_config env_cfg;
+     
+        static real bit_time;
+ 
+//  The extern qualifier indicates that the body of the method (its implementation) is to be found 
+//  outside the declaration
+	extern function new (string name="master_driver", uvm_component parent);
+	extern function void build_phase(uvm_phase phase);
+	extern function void connect_phase(uvm_phase phase);
+	extern task run_phase(uvm_phase phase);
+	extern task drive_data(master_xtn xtn);
+endclass:master_driver
+
+
+//-----------------------------------------------------------------------------------------------//
+//  constructor:new
+//  The new function is called as class constructor. On calling the new method it allocates the 
+//  memory and returns the address to the class handle. For the component class two arguments to be 
+//  passed. 
+//------------------------------------------------------------------------------------------------//
+function master_driver::new(string name = "master_driver", uvm_component parent);
+	super.new(name, parent);
+endfunction:new
+
+
+//-----------------------------------------------------------------------------------------------//
+//  phase:Build
+//  The build phases are executed at the start of the UVM Testbench simulation and their overall 
+//  purpose is to construct, configure and connect the Testbench component hierarchy.
+//  All the build phase methods are functions and therefore execute in zero simulation time.
+//------------------------------------------------------------------------------------------------//
+function void master_driver::build_phase(uvm_phase phase);
+	super.build_phase(phase);
+	`uvm_info("","VISALI DRIVER BUILD PHASE",UVM_LOW)
+//	`uvm_info(get_type_name(),"VISALI DRIVER BUILD PHASE",UVM_LOW)
+	if(!uvm_config_db #(master_agent_config)::get(this,"","master_agent_config",w_cfg))
+	`uvm_fatal("CONFIG","Cannot get() w_cfg from uvm_config_db. Have you set() it?")
+endfunction:build_phase
+
+
+//------------------------------------------------------------------------------------------------//
+//  phase:connect
+//  The connect phase is used to make TLM connections between components or to assign handles to 
+//  testbench resources. It has to occur after the build method so that Testbench component 
+//  hierarchy could be in place and it works from the bottom-up of the hierarchy upwards.
+//------------------------------------------------------------------------------------------------//
+function void master_driver::connect_phase(uvm_phase phase);
+	vif = w_cfg.vif;
+	`uvm_info(get_type_name(),"VISALI DRIVER CONNECT PHASE",UVM_LOW)
+endfunction:connect_phase
+
+
+//-----------------------------------------------------------------------------------------------//
+//  phase:run
+//  The run phase is used for the stimulus generation and checking activities of the Testbench. 
+//  The run phase is implemented as a task, and all uvm_component run tasks are executed in parallel.
+//------------------------------------------------------------------------------------------------//
+task master_driver::run_phase(uvm_phase phase);
+	`uvm_info("","VISALI DRIVER RUN PHASE",UVM_LOW)
+  //initial reset condition
+	$display("VISALI DRIVER: %d time %d",vif.reset,$time);
+//        @(negedge vif.reset);
+
+  // Driving the reset values
+   	vif.masterdrv_cb.tx <= 0;
+
+  //Defining the time period required for each cycle transmission
+  	//bit_time = (1/(env_cfg.buard_rate));
+	bit_time=10;
+ //for transmission
+  	forever
+  	begin
+	$display("VISALI DRIVER B4 get next item:%d",$time);	
+  	seq_item_port.get_next_item(req);
+	`uvm_info("","*********************VISALI DRIVER get_next_item****************",UVM_LOW)
+	req.print();
+  	drive_data(req);
+	`uvm_info("","*********************VISALI DRIVER req print********************",UVM_LOW)
+	req.print();
+  	seq_item_port.item_done();
+	`uvm_info("","VISALI DRIVER item done",UVM_LOW)
+  	end 
+endtask:run_phase
+
+//-----------------------------------------------------------------------------
+// Task: drive_data
+//-----------------------------------------------------------------------------
+task master_driver::drive_data(master_xtn xtn);
+
+// Start condition
+
+//        vif.masterdrv_cb.tx<=1'b0;
+	@(posedge vif.clk);
+	vif.tx_valid_i <= 1'b0;
+	@(posedge vif.reset);
+        //#(bit_time);
+	@(posedge vif.clk);
+	vif.cfg_en_i <=1'b1;
+	vif.tx_valid_i <=1'b1;	
+	vif.cfg_bits_i <=2'b11;
+	vif.da <= req.da;
+	@(posedge vif.clk);
+// Driving the data
+// TODO: Need to support for 5,6,7,8 bit data
+	$display("VISALI DRIVER : vif.cfg_en_i:%d ,vif.tx_valid_i:%d time:%d ",vif.cfg_en_i,vif.tx_valid_i,$time);
+
+	//vif.da <= req.da;
+	$display(" ********1.vid.da: %d , req.da:%d  time:%d ",vif.da,req.da,$time);
+	@(posedge vif.clk);
+	$display("********2.vid.da:%d ,req.da:%d time:%d ",vif.da ,req.da,$time);
+	/*for(int i=0;i<9;i++)
+  	begin
+	@(posedge vif.clk);
+	$display("VISALI DRIVER: req.da[%d]:%d",i,req.da[i]);
+  	//vif.masterdrv_cb.tx <= req.da[i];
+	vif.da[i] <= req.da[i];
+	@(posedge vif.clk);
+	$display("VISALI DRIVER: vif.da[%d]:%d time %d",i,vif.da[i],$time);
+	//@(posedge vif.clk);
+  	//#(bit_time);
+  	end
+	*/
+	
+// TODO: Parity bit calculation and drive it
+	
+// Stop condition
+  //	vif.masterdrv_cb.tx<=1'b1;
+	vif.tx_valid_i <= 1'b1;
+  	#(bit_time);
+
+endtask: drive_data

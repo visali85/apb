@@ -1,0 +1,107 @@
+global coverage_group 0 apb_package::apb_monitor::apb_transfer_cg __coverage_apb_monitor.apb_transfer_cg unused_apb_monitor_apb_transfer_cg_loop_label apb_package 0 1 0 0 0  ( 0 
+)
+ 1 1
+ 72 /pdtools/work_area/frontend/visali/pulpino_apb_uvc/sim/../apb_monitor.sv
+ 47 0 0 0 1 0 0 0 0  1
+0
+0 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0 0
+ 0
+ 0 0
+ 0 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+0
+0
+0
+64
+0
+ 0
+
+3
+0
+1
+0
+ 10 TRANS_ADDR 48 0 0 0 0 0 55 apb_monitor::apb_package_apb_monitor_apb_transfer_cg_fn 55 apb_monitor::apb_package_apb_monitor_apb_transfer_cg_fn 0 0 0 0 0 0 0 0 0 0 -1 0 0 -1 0 0 0 2 32 0 0 1 0 0 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 2 1 1 0 0 1 1 4 ZERO 49 0 0 1 0 0 0 0 0 0 0 0 0 0 -1 0 0 -1 0 0 1 1 1 57 apb_monitor::apb_package_apb_monitor_apb_transfer_cg_fn_0 0 0 0 0 0 0 0
+ 1 1 0 0 1 1 8 NON_ZERO 50 0 0 1 0 0 0 0 0 0 0 0 0 0 -1 0 0 -1 0 0 1 1 1 57 apb_monitor::apb_package_apb_monitor_apb_transfer_cg_fn_1 0 57 apb_monitor::apb_package_apb_monitor_apb_transfer_cg_fn_2 0 0 0 0 0
+
+ 15 TRANS_DIRECTION 52 0 0 0 0 0 57 apb_monitor::apb_package_apb_monitor_apb_transfer_cg_fn_3 57 apb_monitor::apb_package_apb_monitor_apb_transfer_cg_fn_3 0 0 0 0 0 0 0 0 0 0 -1 0 0 -1 0 0 0 7 32 1 31 apb_package::apb_direction_enum 1 1 0 1 0 0 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 2 1 1 0 0 1 1 4 READ 53 0 0 1 0 0 0 0 0 0 0 0 0 0 -1 0 0 -1 0 0 1 1 1 57 apb_monitor::apb_package_apb_monitor_apb_transfer_cg_fn_0 0 0 0 0 0 0 0
+ 1 1 0 0 1 1 5 WRITE 54 0 0 1 0 0 0 0 0 0 0 0 0 0 -1 0 0 -1 0 0 1 1 1 57 apb_monitor::apb_package_apb_monitor_apb_transfer_cg_fn_1 0 0 0 0 0 0 0
+
+ 10 TRANS_DATA 56 0 0 0 0 0 57 apb_monitor::apb_package_apb_monitor_apb_transfer_cg_fn_4 57 apb_monitor::apb_package_apb_monitor_apb_transfer_cg_fn_4 0 0 0 0 0 0 0 0 0 0 -1 0 0 -1 0 0 0 2 32 0 0 1 0 0 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 3 1 1 0 0 1 1 4 ZERO 57 0 0 1 0 0 0 0 0 0 0 0 0 0 -1 0 0 -1 0 0 1 1 1 57 apb_monitor::apb_package_apb_monitor_apb_transfer_cg_fn_0 0 0 0 0 0 0 0
+ 1 1 0 0 1 1 8 NON_ZERO 58 0 0 1 0 0 0 0 0 0 0 0 0 0 -1 0 0 -1 0 0 1 1 1 57 apb_monitor::apb_package_apb_monitor_apb_transfer_cg_fn_1 0 57 apb_monitor::apb_package_apb_monitor_apb_transfer_cg_fn_5 0 0 0 0 0
+ 1 1 0 0 1 1 8 ALL_ONES 59 0 0 1 0 0 0 0 0 0 0 0 0 0 -1 0 0 -1 0 0 1 1 1 57 apb_monitor::apb_package_apb_monitor_apb_transfer_cg_fn_6 0 0 0 0 0 0 0
+
+ 28 TRANS_ADDR_X_TRANS_DIRECTION 0 61 0 0 0 0 2 0 1 -1 0 0 0
+ 0
+ 0
+ 0
+ 0 0
+ 0 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+ 0
+end_coverage_group
